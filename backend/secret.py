@@ -1,0 +1,13 @@
+MAIL_USERNAME = "kubstu10-05-03-2022-vkr@mail.ru"
+MAIL_PASSWORD = 'TmNZJMEBi8jmE2CazaFY'
+MAIL_USER_PASSWORD = "YRmOcTop3u2^"
+MAIL_SERVER = 'smtp.mail.ru'
+MAIL_PORT = 2525
+MAIL_USE_TLS = True
+MAIL_DEFAULT_SENDER = MAIL_USERNAME
+
+DATABASE_NAME = "FWQdb"
+DATABASE_USER = "FWQ"
+DATABASE_PASSWORD = "root"
+
+SECRET_KEY = 'flask-insecure-&-x+uid2c+ynfwd11v!py&7&3_-35yacg7=2pkvim@gcfc@124'
