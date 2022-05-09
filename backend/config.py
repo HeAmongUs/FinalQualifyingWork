@@ -20,6 +20,8 @@ class BaseConfig:
     MAIL_DEFAULT_SENDER = MAIL_USERNAME
 
     # config for field 'password' in accounts.models.User
+    NAME_MIN_LENGTH = 6
+    USERNAME_MIN_LENGTH = 6
     PASSWORD_MIN_LENGTH = 6
     PASSWORD_INCLUDES_SPECIAL_SYMBOLS = True
     PASSWORD_INCLUDES_LOWERCASE = True

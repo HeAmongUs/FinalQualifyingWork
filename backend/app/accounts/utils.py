@@ -8,8 +8,10 @@ from flask_mail import Message
 from flask import current_app as app
 from ..common import db, mail
 
+from .custom_error import *
 
-class UserPassword:
+
+class HashPassword:
     @staticmethod
     def get_random_salt() -> str:
         return secrets.token_hex(8)
@@ -21,20 +23,23 @@ class UserPassword:
 
     @staticmethod
     def check_hash(password_hash: str, password: str, salt: str) -> bool:
-        password_sting = password + salt
-        return sha256(password_sting.encode()).hexdigest() == password_hash
+        return HashPassword.get_hash(password, salt) == password_hash
 
 
 class UserValidator:
     # User.name
     @staticmethod
     def is_valid_name(name: str) -> bool:
-        return True
+        if len(name) >= app.config.get("NAME_MIN_LENGTH", 0):
+            return True
+        raise InvalidNameError
 
     # User.username
     @staticmethod
     def is_valid_username(username: str) -> bool:
-        return True
+        if len(username) >= app.config.get("USERNAME_MIN_LENGTH", 0):
+            return True
+        raise InvalidUsernameError
 
     # User.email
     @staticmethod
@@ -48,9 +53,9 @@ class UserValidator:
     def __is_valid_password_length(password: str) -> bool:
         is_valid_password_length = len(password) >= app.config.get('PASSWORD_MIN_LENGTH', 0)
 
-        if not is_valid_password_length:
-            raise PasswordMinLengthError
-        return True
+        if is_valid_password_length:
+            return True
+        raise PasswordMinLengthError
 
     @staticmethod
     def __is_valid_password_lowercase(password):
@@ -107,11 +112,18 @@ class UserValidator:
     def is_valid_otp_number(otp_number):
         return 100000 <= int(otp_number) < 1000000
 
+    @staticmethod
+    def is_valid_username_and_password(username, password):
+        return all([
+            UserValidator.is_valid_username(username),
+            UserValidator.is_valid_password(password),
+        ])
+
 
 class TwoFactorAuthentication:
     @staticmethod
     def get_OTP_number():
-        return "".join(secrets.choice("0123456789") for i in range(6))
+        return int("".join(secrets.choice("0123456789") for i in range(6)))
 
     @staticmethod
     def send_OTP_number(email, otp_number):
@@ -131,36 +143,6 @@ class TwoFactorAuthentication:
             db.session.add(user)
             db.session.commit()
         except Exception as e:
-            raise Exception(f'{e}, \n authenticate_with_email')
-        TwoFactorAuthentication.send_OTP_number(user.get_email(), user.get_otp_number())
+            raise Exception(f'{e}, \n error authenticate_with_email')
+        TwoFactorAuthentication.send_OTP_number(user.get_email(), user.get_otp_number)
 
-
-class PasswordMinLengthError(Exception):
-    def __str__(self):
-        return 'The entered password is shorter than the allowed length'
-
-
-class InvalidEmailError(Exception):
-    def __str__(self):
-        return 'The entered email is invalid'
-
-
-class PasswordIncludeLowercaseError(Exception):
-    def __str__(self):
-        return 'The entered password must includes one of lowercase letter'
-
-
-class PasswordIncludeUppercaseError(Exception):
-    def __str__(self):
-        return 'The entered password must includes one of uppercase letter'
-
-
-class PasswordIncludeDigitsError(Exception):
-    def __str__(self):
-        return 'The entered password must includes one of digit'
-
-
-class PasswordIncludeSpecialSymbolError(Exception):
-    def __str__(self):
-        return f'The entered password must includes one of special character: \n' \
-               f'{app.config.get("ALLOWED_SPECIAL_SYMBOLS")}'

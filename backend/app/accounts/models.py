@@ -1,12 +1,11 @@
 from datetime import datetime
 
-from flask_login import UserMixin
-
 from ..common import db
-from .utils import UserPassword, UserValidator
+from .utils import HashPassword, UserValidator
+from .custom_error import OTPTryError
 
 
-class User(db.Model, UserMixin):
+class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -14,6 +13,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     otp_number = db.Column(db.Integer)
+    otp_try = db.Column(db.Integer, default=0)
     password_hash = db.Column(db.String(100), nullable=False)
     password_salt = db.Column(db.String(100))
     created_on = db.Column(db.DateTime(), default=datetime.utcnow)
@@ -34,7 +34,7 @@ class User(db.Model, UserMixin):
             return None
 
         user = cls.query.filter_by(username=username).first()
-        if not user or not UserPassword.check_hash(user.password_hash, password, user.password_salt):
+        if not user or not HashPassword.check_hash(user.password_hash, password, user.password_salt):
             return None
 
         return user
@@ -59,15 +59,19 @@ class User(db.Model, UserMixin):
 
     def set_password(self, password):
         if UserValidator.is_valid_password(password):
-            self.password_salt = UserPassword.get_random_salt()
-            self.password_hash = UserPassword.get_hash(password, self.password_salt)
+            self.password_salt = HashPassword.get_random_salt()
+            self.password_hash = HashPassword.get_hash(password, self.password_salt)
 
     def set_otp_number(self, otp_number):
         if UserValidator.is_valid_otp_number(otp_number):
             self.otp_number = otp_number
 
     def get_otp_number(self):
-        return self.otp_number
+        if self.otp_try < 3:
+            self.otp_try += 1
+            return self.otp_number
+        else:
+            raise OTPTryError
 
     def get_email(self):
         return self.email
