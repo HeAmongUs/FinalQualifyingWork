@@ -20,14 +20,18 @@ export default {
       async (error) => {
         if (error.response.status === 401) {
           if (
-            error.response.data.msg === 'Missing cookie "access_token"' &&
+            error.response.data.message === "token is missing" &&
             !error.response.request.responseURL.includes("refresh")
           ) {
+            console.log("refresh")
             const resp = await instance.post("api/v1/accounts/refresh/")
             if (resp.status === 200) {
               app.config.globalProperties.$message(
                 messages["accessTokenUpdate"]
               )
+              if (resp.data.access_token) {
+                localStorage.accessToken = resp.data.access_token
+              }
               return instance.request(error.config)
             } else {
               await app.config.globalProperties.$router.push({ name: "Login" })

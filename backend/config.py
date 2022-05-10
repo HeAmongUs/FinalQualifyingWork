@@ -27,25 +27,27 @@ class BaseConfig:
     PASSWORD_INCLUDES_LOWERCASE = True
     PASSWORD_INCLUDES_UPPERCASE = True
     PASSWORD_INCLUDES_DIGITS = True
-    ALLOWED_SPECIAL_SYMBOLS = "!#%+-*/<=>?@[\]^_{|}~"
+    ALLOWED_SPECIAL_SYMBOLS = '!#%+-*/<=>?@[]^_|~'
 
     # JWT
-    JWT_TOKEN_LOCATION = ('cookies',)
+    JWT_ISSUER_NAME = 'backend_server'
+    JWT_AUDIENCE_LIST = ['frontend_client', 'mobile_client']
     JWT_IDENTITY_CLAIM = "username"
+
+    JWT_ACCESS_TOKEN_COOKIE_NAME = "access_token"
+    JWT_ACCESS_TOKEN_COOKIE_PATH = "/"
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=10)
+
+    JWT_REFRESH_TOKEN_COOKIE_NAME = "refresh_token"
+    JWT_REFRESH_TOKEN_COOKIE_PATH = "/api/v1/accounts/refresh"
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+
     JWT_COOKIE_DOMAIN = None
     JWT_COOKIE_SAMESITE = 'Lax'
     JWT_COOKIE_SECURE = False
     JWT_COOKIE_HTTP_ONLY = True
     JWT_SESSION_COOKIE = False
     JWT_COOKIE_CSRF_PROTECT = False
-
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=10)
-    JWT_ACCESS_COOKIE_NAME = "access_token"
-    JWT_ACCESS_COOKIE_PATH = "/"
-
-    JWT_REFRESH_COOKIE_NAME = "refresh_token"
-    JWT_REFRESH_COOKIE_PATH = "/api/v1/accounts/refresh/"
-    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
 
 class Config(BaseConfig):

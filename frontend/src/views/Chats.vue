@@ -9,21 +9,23 @@ import io from "socket.io-client"
 import appConfig from "../app.config"
 export default {
   name: "Chats",
-  setup() {
+  data() {
     return {
-      io$: io(`${appConfig.server.baseURL}`, {
-        extraHeaders: {
-          access_token: "mytoken",
-        },
-      }),
+      io: null,
     }
   },
-  async mounted() {
-    this.io$.on("event", (socket) => {
-      this.io$.emit("event", socket)
+  async created() {
+    const accessToken = await this.$store.getters.accessToken
+    this.io = await io(`${appConfig.server.baseURL}`, {
+      extraHeaders: {
+        access_token: accessToken,
+      },
+    })
+    this.io.on("event", (socket) => {
+      this.io.emit("event", socket)
       console.log("EVENT", socket)
     })
-    this.io$.on("connect", () => {
+    this.io.on("connect", () => {
       console.log("CONNECT")
     })
   },

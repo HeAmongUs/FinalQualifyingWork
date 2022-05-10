@@ -79,6 +79,9 @@ export default {
       const response = await this.$api.auth.login(user)
       if (response.status === 200) {
         if (this.isConfirmed) {
+          const accessToken = response.data.access_token
+          console.log(accessToken)
+          await this.$store.commit("setAccessToken", accessToken)
           await this.$router.push({ name: "Home" })
           this.$message(messages["loginSuccess"])
         } else {

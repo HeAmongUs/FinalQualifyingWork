@@ -1,8 +1,9 @@
 from datetime import datetime
 
 from ..common import db
-from .utils import HashPassword, UserValidator
+from .utils import HashPassword
 from .custom_error import OTPTryError
+from .validator import UserValidator
 
 
 class User(db.Model):
