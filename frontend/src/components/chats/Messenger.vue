@@ -1,0 +1,157 @@
+<template>
+  <div class="messenger">
+    <div class="messenger-header">
+      <div class="left flex-center">
+        <div>
+        <span class="username">{{ username }}</span> | <span> {{ filteredDate }}</span>
+        </div>
+      </div>
+      <div class="right flex-justify-start">
+        <div v-if="selectedChatId">
+          {{ chats.find((c) => c.id === selectedChatId).title }}
+        </div>
+      </div>
+    </div>
+    <div class="messenger-content">
+      <div class="left">
+        <chat-list
+          :chats="chats"
+          v-model="selectedChatId"
+          :selected="selectedChatId"
+        />
+      </div>
+
+      <div class="right">
+        <message-list :messages="messages" />
+        <message-input />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import ChatList from "./ChatList"
+import MessageList from "./MessageList"
+import MessageInput from "./MessageInput"
+import io from "socket.io-client"
+import appConfig from "../../app.config"
+export default {
+  name: "Messenger",
+  components: { MessageInput, MessageList, ChatList },
+  data() {
+    return {
+      io: null,
+      chats: null,
+      selectedChatId: null,
+      messages: null,
+      date: new Date(),
+    }
+  },
+  mounted() {
+    this.interval = setInterval(() => {
+      this.date = new Date()
+    }, 1000)
+    window.M.updateTextFields()
+  },
+  beforeUnmount() {
+    clearInterval(this.interval)
+  },
+  async created() {
+    this.chats = (await this.$api.chat.getChats()).data
+
+    const accessToken = await this.$store.getters.accessToken
+    this.io = await io(`${appConfig.server.baseURL}`, {
+      extraHeaders: {
+        Authorization: accessToken,
+      },
+    })
+    this.io.on("event", (msg) => {
+      this.io.emit("event", msg)
+      console.log("EVENT", msg)
+    })
+    this.io.on("connect", () => {
+      console.log("CONNECT")
+    })
+  },
+  watch: {
+    async selectedChatId() {
+      console.log("Sel")
+      this.messages = (
+        await this.$api.chat.getChatMessages(this.selectedChatId)
+      ).data
+    },
+  },
+  computed: {
+    username() {
+      return this.$store.getters.userInfo.username || null
+    },
+    filteredDate() {
+      const options = {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }
+      return Intl.DateTimeFormat("ru-RU", options).format(new Date(this.date))
+    },
+  },
+}
+</script>
+
+<style scoped lang="scss">
+@import "../../assets/messenger.colors";
+
+.left {
+  width: 30%;
+  max-width: 350px;
+}
+.right {
+  width: 90%;
+}
+.messenger {
+  color: white;
+  max-width: 1600px;
+  width: calc(100% - 40px);
+  padding: 20px;
+  font-size: 12px;
+  margin: 0 auto;
+
+  &-header {
+    height: 40px;
+    display: flex;
+
+    .left {
+      display: flex;
+      background-color: $header-bg;
+      border-right: 2px solid $border-list;
+      font-size: 14px;
+
+      .username {
+        font-weight: bold;
+      }
+    }
+    .right {
+      display: flex;
+      background-color: $header-bg;
+      padding-left: 10px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
+  &-content {
+    display: flex;
+
+    .left {
+      background: $side-bg;
+    }
+    .right {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background: $chat-bg;
+    }
+  }
+}
+.messenger-left {
+  width: 30%;
+}
+</style>

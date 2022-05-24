@@ -7,12 +7,11 @@ from .validator import UserValidator
 
 
 class User(db.Model):
-    __tablename__ = "users"
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
+    messages = db.relationship('Message', backref='user', lazy='dynamic')
     otp_number = db.Column(db.Integer)
     otp_try = db.Column(db.Integer, default=0)
     password_hash = db.Column(db.String(100), nullable=False)

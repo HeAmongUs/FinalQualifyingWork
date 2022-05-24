@@ -69,7 +69,7 @@ def logout():
 @MyJWT.jwt_required(token_type="refresh")
 def refresh():
     response = make_response({"Message": "token was refreshed"})
-    refresh_token = request.cookies.get('refresh_token')
+    refresh_token = MyJWT.get_token_from_request(token_type="refresh")
     username = MyJWT.get_username_from_jwt(refresh_token, token_type='refresh')
     access_token = MyJWT.encode_token(username=username, token_type='access')
     MyJWT.set_cookie(response, access_token, token_type='access')
@@ -79,5 +79,4 @@ def refresh():
 @accounts.route("/user/")
 @MyJWT.jwt_required()
 def get_user_info():
-    token = request.cookies.get("access_token")
-    return make_response(MyJWT.get_current_user(token, token_type='access').to_dict())
+    return make_response(MyJWT.get_current_user(token_type='access').to_dict())

@@ -11,8 +11,8 @@ from app.accounts.models import User
 
 class MyJWT:
     @staticmethod
-    def encode_token(username: str, token_type: str = "access", ):
-        """Create token_type token by username"""
+    def encode_token(username: str, token_type: str = "access", ) -> str:
+        """Create token by username"""
         if token_type not in ['access', 'refresh']:
             token_type = 'access'
         try:
@@ -36,6 +36,7 @@ class MyJWT:
             )
         except jwt.InvalidAlgorithmError:
             print("InvalidAlgorithmError")
+            raise jwt.InvalidAlgorithmError
 
     @staticmethod
     def decode_token(token: str, token_type: str = "access", ) -> dict:
@@ -87,21 +88,12 @@ class MyJWT:
             @wraps(func)
             def inner(*args, **kwargs):
                 try:
-                    access_token = request.cookies.get(app.config.get(f'JWT_{token_type.upper()}_TOKEN_COOKIE_NAME', None))
-                    if access_token:
-                        MyJWT.decode_token(access_token)
-                        return func(*args, **kwargs)
-                    data = request.get_json()
-                    if data:
-                        access_token = data.get(app.config.get(f'JWT_{token_type.upper()}_TOKEN_COOKIE_NAME', None))
-                    if access_token:
-                        MyJWT.decode_token(access_token)
-                        return func(*args, **kwargs)
-                    access_token = request.headers.get('Access-Token', None)
-                    if access_token:
-                        MyJWT.decode_token(access_token)
+                    token = MyJWT.get_token_from_request(token_type)
+                    if token:
+                        MyJWT.decode_token(token)
                         return func(*args, **kwargs)
                     else:
+                        print("missing token")
                         return make_response({'message': 'token is missing'}, 401)
                 except jwt.ExpiredSignatureError:
                     print("expired token")
@@ -115,10 +107,30 @@ class MyJWT:
         return wrapper
 
     @staticmethod
-    def get_username_from_jwt(token: str, token_type: str = 'access'):
+    def get_username_from_jwt(token: str, token_type: str = 'access') -> str:
         return MyJWT.decode_token(token, token_type=token_type).get('username')
 
     @staticmethod
-    def get_current_user(token, token_type: str = 'access'):
+    def get_current_user(token_type: str = 'access') -> User:
+        token = MyJWT.get_token_from_request(token_type)
         username = MyJWT.get_username_from_jwt(token, token_type)
         return User.query.filter_by(username=username).first()
+
+    @staticmethod
+    def get_token_from_request(token_type='access'):
+        # From cookies
+        access_token = request.cookies.get(app.config.get(f'JWT_{token_type.upper()}_TOKEN_COOKIE_NAME', None))
+        if access_token:
+            return access_token
+
+        # From header
+        access_token = request.headers.get('Authorization', None)
+        if access_token:
+            return access_token
+
+        # From json
+        data = request.get_json()
+        if data:
+            access_token = data.get(app.config.get(f'JWT_{token_type.upper()}_TOKEN_COOKIE_NAME', None))
+        if access_token:
+            return access_token
