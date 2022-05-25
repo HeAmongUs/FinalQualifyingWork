@@ -55,7 +55,9 @@ def create_app():
     migrate = Migrate(app, db)
     mail.init_app(app)
     jwt.init_app(app)
-    socketio.init_app(app, cors_allowed_origins='http://127.0.0.1:8080', async_mode='threading')
+    socketio.init_app(app,
+                      cors_allowed_origins=['http://127.0.0.1:8080', 'http://127.0.0.1:8081'],
+                      async_mode='threading')
 
     with app.app_context():
         try:
