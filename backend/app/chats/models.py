@@ -46,6 +46,7 @@ class Message(db.Model):
         return {
             "id": self.id,
             "username": self.user_username,
+            "chatId": self.chat_id,
             "text": self.text,
-            "created": self.created_on
+            "created": self.created_on.strftime("%H:%M:%S")
         }

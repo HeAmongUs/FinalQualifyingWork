@@ -5,7 +5,7 @@
         <i class="icon-prefix material-icons flex-center tiny absolute"
           >search</i
         >
-        <input v-model="searchInput" type="text" placeholder="Поиск" />
+        <input v-model.lazy="lazySearchInput" type="text" placeholder="Поиск" />
       </div>
     </div>
     <ul class="chat-list">
@@ -28,6 +28,7 @@
 <script>
 export default {
   name: "ChatList",
+
   props: {
     chats: {
       required: true,
@@ -39,12 +40,18 @@ export default {
   },
   data() {
     return {
-      searchInput: "",
+      lazySearchInput: "",
+      selectedChatGroupValue: "my",
     }
   },
   methods: {
     updateSelected(selectedChatId) {
       this.$emit("update:modelValue", selectedChatId)
+    },
+  },
+  watch: {
+    lazySearchInput() {
+      this.$emit("update:searchInput", this.lazySearchInput)
     },
   },
 }
@@ -53,7 +60,7 @@ export default {
 <style scoped lang="scss">
 @import "../../assets/messenger.colors";
 .search-input {
-  padding: 5px;
+  padding: 5px 10px;
 }
 input {
   border-radius: 10px !important;

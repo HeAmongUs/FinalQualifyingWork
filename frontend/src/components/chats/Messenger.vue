@@ -3,7 +3,8 @@
     <div class="messenger-header">
       <div class="left flex-center">
         <div>
-        <span class="username">{{ username }}</span> | <span> {{ filteredDate }}</span>
+          <span class="username">{{ username }}</span> |
+          <span> {{ filteredDate }}</span>
         </div>
       </div>
       <div class="right flex-justify-start">
@@ -18,12 +19,15 @@
           :chats="chats"
           v-model="selectedChatId"
           :selected="selectedChatId"
+          v-model:search-input="searchInput"
         />
       </div>
 
       <div class="right">
-        <message-list :messages="messages" />
-        <message-input />
+        <message-list :messages="messages" v-if="messages" />
+        <message-input
+          @sendMessage="(messageText) => handlerSendMessage(messageText)"
+        />
       </div>
     </div>
   </div>
@@ -42,9 +46,12 @@ export default {
     return {
       io: null,
       chats: null,
+      userChats: null,
+      searchedChats: null,
       selectedChatId: null,
       messages: null,
       date: new Date(),
+      searchInput: null,
     }
   },
   mounted() {
@@ -57,7 +64,8 @@ export default {
     clearInterval(this.interval)
   },
   async created() {
-    this.chats = (await this.$api.chat.getChats()).data
+    this.userChats = (await this.$api.chat.getChats()).data
+    this.chats = this.userChats
 
     const accessToken = await this.$store.getters.accessToken
     this.io = await io(`${appConfig.server.baseURL}`, {
@@ -65,6 +73,13 @@ export default {
         Authorization: accessToken,
       },
     })
+
+    this.io.on("display new message", (message) => {
+      if (this.selectedChatId === message.chatId) {
+        this.messages.push(message)
+      }
+    })
+
     this.io.on("event", (msg) => {
       this.io.emit("event", msg)
       console.log("EVENT", msg)
@@ -73,12 +88,38 @@ export default {
       console.log("CONNECT")
     })
   },
+  methods: {
+    async handlerSendMessage(messageText) {
+      this.io.emit("send message", {
+        chatId: this.selectedChatId,
+        messageText: messageText,
+      })
+      // await this.$api.chat.sendMessage(this.selectedChatId, {
+      //   messageText: messageText,
+      // })
+    },
+  },
   watch: {
     async selectedChatId() {
-      console.log("Sel")
-      this.messages = (
-        await this.$api.chat.getChatMessages(this.selectedChatId)
-      ).data
+      if (this.selectedChatId) {
+        this.messages = (
+          await this.$api.chat.getChatMessages(this.selectedChatId)
+        ).data
+      }
+    },
+    async searchInput() {
+      this.selectedChatId = null
+      this.messages = null
+      if (this.searchInput) {
+        this.searchedChats = (
+          await this.$api.chat.getSearchedChats(this.searchInput)
+        ).data
+        if (this.searchedChats) {
+          this.chats = this.searchedChats
+        }
+      } else {
+        this.chats = this.userChats
+      }
     },
   },
   computed: {
@@ -139,6 +180,7 @@ export default {
   }
   &-content {
     display: flex;
+    height: calc(100vh - 150px);
 
     .left {
       background: $side-bg;

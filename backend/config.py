@@ -36,7 +36,7 @@ class BaseConfig:
 
     JWT_ACCESS_TOKEN_COOKIE_NAME = "access_token"
     JWT_ACCESS_TOKEN_COOKIE_PATH = "/"
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=10)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=6)
 
     JWT_REFRESH_TOKEN_COOKIE_NAME = "refresh_token"
     JWT_REFRESH_TOKEN_COOKIE_PATH = "/api/v1/accounts/refresh"

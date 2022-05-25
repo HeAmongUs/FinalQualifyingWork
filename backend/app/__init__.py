@@ -15,23 +15,17 @@ from app.chats import chats
 @socketio.on('connect')
 def test_connect():
     emit("event", "TEST")
-    print("connect")
 
 
 @socketio.on('disconnect')
 def test_disconnect():
-    print("disconnect")
-
-
-@socketio.on('disconnecting')
-def test_disconnecting():
-    print("disconnecting")
+    pass
 
 
 @socketio.on('event')
 @MyJWT.jwt_required()
 def message(msg):
-    print(f"MSG: {msg}")
+    pass
 
 
 @jwt.user_lookup_loader
