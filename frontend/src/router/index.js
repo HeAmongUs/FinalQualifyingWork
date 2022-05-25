@@ -3,12 +3,6 @@ import api from "../api"
 
 const routes = [
   {
-    path: "/",
-    name: "Home",
-    meta: { layout: "main", auth: true },
-    component: () => import("../views/Home"),
-  },
-  {
     path: "/login",
     name: "Login",
     meta: { layout: "empty", auth: false },

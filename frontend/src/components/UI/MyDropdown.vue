@@ -20,9 +20,9 @@ export default {
 
 <style scoped lang="scss">
 .dropdown {
+  display: inline;
   position: relative;
   transition: 0.3s;
-  opacity: 1;
   border: 1px solid transparent;
   padding: 0 8px;
   svg {
@@ -32,7 +32,7 @@ export default {
     opacity: 1;
     display: block;
     top: 0;
-    left: -160px;
+    left: 60px;
     position: absolute;
     width: 160px;
     height: 0;

@@ -82,7 +82,7 @@ export default {
           const accessToken = response.data.access_token
           console.log(accessToken)
           await this.$store.commit("setAccessToken", accessToken)
-          await this.$router.push({ name: "Home" })
+          await this.$router.push({ name: "Chats" })
           this.$message(messages["loginSuccess"])
         } else {
           this.isConfirmed = true

@@ -11,7 +11,7 @@ from app.accounts.custom_error import *
 from app.accounts.validator import UserValidator
 
 
-@accounts.route('/login/', methods=['post'])
+@accounts.route('/login', methods=['post'])
 def login():
     data = request.get_json()
     username = data.get('username', None)
@@ -56,7 +56,7 @@ def login():
         return make_response({"Message": "OTP number was send on your email"}, 200)
 
 
-@accounts.route("/logout/", methods=["DELETE"])
+@accounts.route("/logout", methods=["DELETE"])
 @MyJWT.jwt_required()
 def logout():
     response = make_response({"Message": "logout successful"})
@@ -65,7 +65,7 @@ def logout():
     return response
 
 
-@accounts.route("/refresh/", methods=['post'])
+@accounts.route("/refresh", methods=['post'])
 @MyJWT.jwt_required(token_type="refresh")
 def refresh():
     response = make_response({"Message": "token was refreshed"})
@@ -76,7 +76,7 @@ def refresh():
     return response
 
 
-@accounts.route("/user/")
+@accounts.route("/user")
 @MyJWT.jwt_required()
 def get_user_info():
     return make_response(MyJWT.get_current_user(token_type='access').to_dict())

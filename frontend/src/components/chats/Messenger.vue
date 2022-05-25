@@ -1,7 +1,7 @@
 <template>
   <div class="messenger">
     <div class="messenger-header">
-      <div class="left flex-center">
+      <div class="my-left flex-center">
         <div class="messenger-header-left-content">
           <my-dropdown>
             <template v-slot:target>
@@ -13,8 +13,8 @@
               <ul>
                 <li @click="logout">
                   <span class="button">
-                    <i class="tiny left material-icons">mode_edit</i>
-                    Update
+                    <i class="material-icons left">assignment_return</i>
+                    Logout
                   </span>
                 </li>
               </ul>
@@ -25,14 +25,14 @@
           <span> {{ filteredDate }}</span>
         </div>
       </div>
-      <div class="right flex-justify-start">
+      <div class="my-right flex-justify-start">
         <div v-if="selectedChatId">
           {{ chats.find((c) => c.id === selectedChatId).title }}
         </div>
       </div>
     </div>
     <div class="messenger-content">
-      <div class="left">
+      <div class="my-left">
         <chat-list
           :chats="chats"
           v-model="selectedChatId"
@@ -41,7 +41,7 @@
         />
       </div>
 
-      <div class="right">
+      <div class="my-right">
         <message-list :messages="messages" v-if="messages" />
         <message-input
           @sendMessage="(messageText) => handlerSendMessage(messageText)"
@@ -57,7 +57,8 @@ import MessageList from "./MessageList"
 import MessageInput from "./MessageInput"
 import io from "socket.io-client"
 import appConfig from "../../app.config"
-import MyDropdown from "@/components/UI/MyDropdown"
+import MyDropdown from "../UI/MyDropdown"
+import messages from "@/plugins/messages"
 export default {
   name: "Messenger",
   components: { MyDropdown, MessageInput, MessageList, ChatList },
@@ -117,6 +118,16 @@ export default {
       //   messageText: messageText,
       // })
     },
+    async logout() {
+      try {
+        await this.$api.auth.logout()
+        this.$store.commit("clearUserInfo")
+        await this.$router.push({ name: "Login" })
+        this.$message(messages["logout"])
+      } catch (e) {
+        console.log(e)
+      }
+    },
   },
   watch: {
     async selectedChatId() {
@@ -160,11 +171,11 @@ export default {
 <style scoped lang="scss">
 @import "../../assets/messenger.colors";
 
-.left {
+.my-left {
   width: 30%;
   max-width: 350px;
 }
-.right {
+.my-right {
   width: 90%;
 }
 .messenger {
@@ -179,18 +190,24 @@ export default {
     height: 40px;
     display: flex;
 
-    .left {
+    .my-left {
       display: flex;
       background-color: $header-bg;
       border-right: 2px solid $border-list;
       font-size: 14px;
 
       .username {
+        cursor: pointer;
         font-weight: bold;
         display: inline-block;
+        transition: 0.2s;
+
+        &:hover {
+          color: $message-author;
+        }
       }
     }
-    .right {
+    .my-right {
       display: flex;
       background-color: $header-bg;
       padding-left: 10px;
@@ -200,12 +217,12 @@ export default {
   }
   &-content {
     display: flex;
-    height: calc(100vh - 150px);
+    height: calc(100vh - 80px);
 
-    .left {
+    .my-left {
       background: $side-bg;
     }
-    .right {
+    .my-right {
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
