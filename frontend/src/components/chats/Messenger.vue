@@ -2,8 +2,26 @@
   <div class="messenger">
     <div class="messenger-header">
       <div class="left flex-center">
-        <div>
-          <span class="username">{{ username }}</span> |
+        <div class="messenger-header-left-content">
+          <my-dropdown>
+            <template v-slot:target>
+              <div class="username">
+                {{ username }}
+              </div>
+            </template>
+            <template v-slot:content>
+              <ul>
+                <li @click="logout">
+                  <span class="button">
+                    <i class="tiny left material-icons">mode_edit</i>
+                    Update
+                  </span>
+                </li>
+              </ul>
+            </template>
+          </my-dropdown>
+
+          |
           <span> {{ filteredDate }}</span>
         </div>
       </div>
@@ -39,9 +57,10 @@ import MessageList from "./MessageList"
 import MessageInput from "./MessageInput"
 import io from "socket.io-client"
 import appConfig from "../../app.config"
+import MyDropdown from "@/components/UI/MyDropdown"
 export default {
   name: "Messenger",
-  components: { MessageInput, MessageList, ChatList },
+  components: { MyDropdown, MessageInput, MessageList, ChatList },
   data() {
     return {
       io: null,
@@ -168,6 +187,7 @@ export default {
 
       .username {
         font-weight: bold;
+        display: inline-block;
       }
     }
     .right {

@@ -100,7 +100,7 @@ export default {
 
     &-wrapper {
       overflow-y: auto;
-      
+
       &::-webkit-scrollbar {
         width: 10px;
         cursor: pointer;

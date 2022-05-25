@@ -46,8 +46,8 @@ def create_app():
         app,
         supports_credentials=True,
         resources={
-            r'/': {'origins': ['http://127.0.0.1:8080', 'http://localhost:8080']},
-            r'/api/v1/*': {'origins': ['http://127.0.0.1:8080', 'http://localhost:8080']},
+            r'/': {'origins': ['http://127.0.0.1:8080', 'http://127.0.0.1:8081', 'http://localhost:8080']},
+            r'/api/v1/*': {'origins': ['http://127.0.0.1:8080', 'http://127.0.0.1:8081', 'http://localhost:8080']},
         })
     app.register_blueprint(accounts)
     app.register_blueprint(chats)
