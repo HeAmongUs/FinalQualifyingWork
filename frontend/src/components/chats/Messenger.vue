@@ -13,14 +13,15 @@
               <ul>
                 <li @click="logout">
                   <span class="button">
-                    <i class="material-icons left">assignment_return</i>
+                    <i class="material-icons left color-blue"
+                      >assignment_return</i
+                    >
                     Logout
                   </span>
                 </li>
               </ul>
             </template>
           </my-dropdown>
-
           |
           <span> {{ filteredDate }}</span>
         </div>
@@ -203,7 +204,7 @@ export default {
         transition: 0.2s;
 
         &:hover {
-          color: $message-author;
+          color: $blue-main;
         }
       }
     }
@@ -232,5 +233,30 @@ export default {
 }
 .messenger-left {
   width: 30%;
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 575.98px) {
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 767.98px) {
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 991.98px) {
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 1199.98px) {
+  .messenger {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// X-Large devices (large desktops, less than 1400px)
+@media (max-width: 1399.98px) {
 }
 </style>

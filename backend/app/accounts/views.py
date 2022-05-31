@@ -42,8 +42,6 @@ def login():
 
             access_token = MyJWT.encode_token(user.username, token_type="access")
             refresh_token = MyJWT.encode_token(user.username, token_type="refresh")
-            MyJWT.set_cookie(response, access_token, token_type="access")
-            MyJWT.set_cookie(response, refresh_token, token_type="refresh")
 
             response.data = json.dumps({'Message': 'Login successfully',
                                         'access_token': access_token,
@@ -65,7 +63,7 @@ def logout():
     return response
 
 
-@accounts.route("/refresh", methods=['post'])
+@accounts.route("/refresh", methods=['POST'])
 @MyJWT.jwt_required(token_type="refresh")
 def refresh():
     response = make_response({"Message": "token was refreshed"})

@@ -12,7 +12,7 @@
       />
     </div>
     <div class="send-btn" v-if="!isDisabled" @click="sendMessageHandler">
-      <i class="material-icons">send</i>
+      <i class="material-icons color-blue-hover">send</i>
     </div>
   </form>
 </template>

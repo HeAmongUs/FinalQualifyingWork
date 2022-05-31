@@ -1,7 +1,8 @@
 import axios from "axios"
+import appConfig from "../app.config"
 
 const instance = axios.create({
-  baseURL: "http://127.0.0.1:8000/",
+  baseURL: appConfig.server.baseURL,
   withCredentials: true,
   headers: {
     accept: "application/json",

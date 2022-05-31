@@ -8,7 +8,12 @@ export default {
     app.config.globalProperties.$api = api
 
     instance.interceptors.request.use(
-      (config) => config,
+      (config) => {
+        config.headers = {
+          Authorization: `${localStorage.getItem("accessToken")}`,
+        }
+        return config
+      },
       (error) => {
         console.log(error)
       }
@@ -20,7 +25,8 @@ export default {
       async (error) => {
         if (error.response.status === 401) {
           if (
-            error.response.data.message === "token is missing" &&
+            (error.response.data.message === "token is missing" ||
+              error.response.data.message === "token is expired") &&
             !error.response.request.responseURL.includes("refresh")
           ) {
             console.log("refresh")

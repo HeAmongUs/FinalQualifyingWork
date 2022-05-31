@@ -20,8 +20,7 @@
       <template v-else
         ><li class="message-list-item">
           <div class="message-content message-center">
-            <div class="message-author">System</div>
-            <div>Нет сообщений</div>
+            <div style="text-align: center; font-size: 16px">Чат пуст</div>
           </div>
         </li></template
       >
@@ -44,13 +43,20 @@ export default {
       },
     }
   },
-  watch: {
-    "messages.length"() {
-      console.log("new msg")
+  mounted() {
+    this.scrollBottom()
+  },
+  methods: {
+    scrollBottom() {
       this.$nextTick(() => {
         this.$refs.messageListScroll.scrollTop =
           this.$refs.messageList.scrollHeight + 200
       })
+    },
+  },
+  watch: {
+    "messages.length"() {
+      this.scrollBottom()
     },
   },
 }
@@ -83,7 +89,7 @@ export default {
   &-author {
     justify-self: flex-start;
     font-weight: bold;
-    color: $message-author;
+    color: $blue-main;
   }
   &-content {
     min-width: 150px;

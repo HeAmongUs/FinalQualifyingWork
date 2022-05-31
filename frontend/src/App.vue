@@ -72,4 +72,18 @@ textarea {
     cursor: text;
   }
 }
+.color-blue {
+  color: $blue-main;
+}
+.color-blue-hover:hover {
+  transition: 0.3s;
+  color: $blue-main;
+}
+
+/* label underline focus color */
+.input-field input[type="text"]:focus,
+.input-field textarea:focus {
+  border-bottom: 1px solid $blue-main !important;
+  box-shadow: 0 1px 0 0 $blue-main !important;
+}
 </style>

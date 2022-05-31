@@ -66,4 +66,4 @@ def send_message(payload):
         db.session.commit()
         new_msg = Message.query.filter_by(chat_id=chat_id, user_username=current_user.username, text=text).first()
         print(new_msg)
-        emit("display new message", new_msg.serialize)
+        emit("display new message", new_msg.serialize, broadcast=True)

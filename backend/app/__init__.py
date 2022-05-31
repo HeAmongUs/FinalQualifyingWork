@@ -17,27 +17,6 @@ def test_connect():
     emit("event", "TEST")
 
 
-@socketio.on('disconnect')
-def test_disconnect():
-    pass
-
-
-@socketio.on('event')
-@MyJWT.jwt_required()
-def message(msg):
-    pass
-
-
-@jwt.user_lookup_loader
-def user_loader_callback(jwt_header, jwt_payload):
-    """Function for app, to return user object"""
-    if jwt_header:
-        username = jwt_payload["username"]
-        user = User.query.filter_by(username=username).one_or_none()
-        return user
-    return None
-
-
 def create_app():
     app = Flask(__name__)
     app.config.from_object('config.Config')
@@ -46,8 +25,8 @@ def create_app():
         app,
         supports_credentials=True,
         resources={
-            r'/': {'origins': ['http://127.0.0.1:8080', 'http://127.0.0.1:8081', 'http://localhost:8080']},
-            r'/api/v1/*': {'origins': ['http://127.0.0.1:8080', 'http://127.0.0.1:8081', 'http://localhost:8080']},
+            r'/': {'origins': app.config.get("ALLOWED_HOST", '*')},
+            r'/api/v1/*': {'origins': app.config.get("ALLOWED_HOST", '*')},
         })
     app.register_blueprint(accounts)
     app.register_blueprint(chats)
@@ -56,7 +35,7 @@ def create_app():
     mail.init_app(app)
     jwt.init_app(app)
     socketio.init_app(app,
-                      cors_allowed_origins=['http://127.0.0.1:8080', 'http://127.0.0.1:8081'],
+                      cors_allowed_origins=app.config.get("ALLOWED_HOST", '*'),
                       async_mode='threading')
 
     with app.app_context():
@@ -102,15 +81,6 @@ def create_app():
 
             print(User.query.all())
             print(Chat.query.all())
-
-            print(f'User1 msgs:{user1.messages.all()}')
-            print(f'User2 msgs:{user2.messages.all()}')
-
-            chat1 = Chat.query.filter_by(title='First').first()
-            chat2 = Chat.query.filter_by(title='Second').first()
-            print(f'Chats\n {chat1.users_in_chat}\n {chat2.users_in_chat}')
-
-            print(user1.chats.all())
         except Exception as e:
             print(e)
 

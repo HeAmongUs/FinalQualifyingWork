@@ -16,7 +16,13 @@
         :class="[selected === chat.id ? 'selected' : '']"
         class="chat-list-item"
       >
-        <div class="chat-list-item__icon">IMG</div>
+        <div class="chat-list-item__icon">
+          <i
+            class="material-icons small bg-transparent"
+            :class="[selected === chat.id ? 'color-blue' : '']"
+            >chat</i
+          >
+        </div>
         <div class="chat-list-item-info">
           <div class="chat-list-item__title">{{ chat.title }}</div>
         </div>
@@ -75,6 +81,10 @@ input {
 }
 .selected {
   background: rgba(255, 240, 255, 0.15);
+  font-weight: bold;
+}
+.bg-transparent {
+  background: transparent;
 }
 .chat-list {
   &-wrapper {

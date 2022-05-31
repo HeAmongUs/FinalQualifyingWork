@@ -10,6 +10,11 @@ class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     CORS_HEADERS = 'Content-Type'
+    ALLOWED_HOSTS = [
+        'http://127.0.0.1:8080', 'http://127.0.0.1:8081', 'http://localhost:8080', 'http://192.168.43.108:8080',
+        'http://192.168.0.108:8080', 'https://localhost:8080', 'https://127.0.0.1:8080', 'https://127.0.0.1:8081',
+        'https://192.168.43.108:8080', 'https://192.168.0.108:8080',
+    ]
 
     # Config Flask-Mail
     MAIL_USERNAME = secret.MAIL_USERNAME
@@ -43,7 +48,7 @@ class BaseConfig:
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
     JWT_COOKIE_DOMAIN = None
-    JWT_COOKIE_SAMESITE = 'Lax'
+    JWT_COOKIE_SAMESITE = 'None'
     JWT_COOKIE_SECURE = False
     JWT_COOKIE_HTTP_ONLY = True
     JWT_SESSION_COOKIE = False
