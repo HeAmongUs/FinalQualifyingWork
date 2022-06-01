@@ -20,14 +20,10 @@ export default {
 
 <style scoped lang="scss">
 .dropdown {
-  display: inline;
   position: relative;
   transition: 0.3s;
   border: 1px solid transparent;
   padding: 0 8px;
-  svg {
-    width: 4px;
-  }
   &-content {
     opacity: 1;
     display: block;

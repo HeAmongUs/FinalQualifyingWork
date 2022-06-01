@@ -14,9 +14,9 @@ export default {
 .empty-layout {
   background: #ddd;
   display: flex;
-  position: relative;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 500px;
 }
 </style>

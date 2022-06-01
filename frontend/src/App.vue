@@ -27,7 +27,6 @@ export default {
 #app {
   text-align: center;
   background: $app-bg;
-  height: 100vh;
 }
 * {
   padding: 0;
@@ -73,7 +72,7 @@ textarea {
   }
 }
 .color-blue {
-  color: $blue-main;
+  color: $blue-main !important;
 }
 .color-blue-hover:hover {
   transition: 0.3s;

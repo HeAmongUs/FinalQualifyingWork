@@ -17,4 +17,7 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.app-main-layout {
+}
+</style>

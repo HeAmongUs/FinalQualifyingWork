@@ -1,18 +1,18 @@
 <template>
   <div class="messenger">
-    <div class="messenger-header">
-      <div class="my-left flex-center">
-        <div class="messenger-header-left-content">
+    <div class="sidebar" v-if="!split || !selectedChatId">
+      <header class="header">
+        <div class="header-username">
           <my-dropdown>
             <template v-slot:target>
-              <div class="username">
+              <div class="color-blue-hover">
                 {{ username }}
               </div>
             </template>
             <template v-slot:content>
               <ul>
                 <li @click="logout">
-                  <span class="button">
+                  <span class="button color-blue">
                     <i class="material-icons left color-blue"
                       >assignment_return</i
                     >
@@ -22,18 +22,13 @@
               </ul>
             </template>
           </my-dropdown>
-          |
-          <span> {{ filteredDate }}</span>
         </div>
-      </div>
-      <div class="my-right flex-justify-start">
-        <div v-if="selectedChatId">
-          {{ chats.find((c) => c.id === selectedChatId).title }}
+        <div class="header-datetime">
+          <div class="header__datetime">{{ filteredDate }}</div>
         </div>
-      </div>
-    </div>
-    <div class="messenger-content">
-      <div class="my-left">
+      </header>
+
+      <div class="sidebar-content">
         <chat-list
           :chats="chats"
           v-model="selectedChatId"
@@ -41,8 +36,20 @@
           v-model:search-input="searchInput"
         />
       </div>
+    </div>
+    <div class="chat" v-if="!split || selectedChatId">
+      <header class="header">
+        <div class="header-back" @click="selectedChatId = null" v-if="split">
+          <i class="material-icons left color-blue-hover">assignment_return</i>
+        </div>
+        <div class="flex-justify-start">
+          <div v-if="selectedChatId">
+            {{ chats.find((c) => c.id === selectedChatId).title }}
+          </div>
+        </div>
+      </header>
 
-      <div class="my-right">
+      <div class="chat-content">
         <message-list :messages="messages" v-if="messages" />
         <message-input
           @sendMessage="(messageText) => handlerSendMessage(messageText)"
@@ -62,6 +69,7 @@ import MyDropdown from "../UI/MyDropdown"
 import messages from "@/plugins/messages"
 export default {
   name: "Messenger",
+  // eslint-disable-next-line vue/no-unused-components
   components: { MyDropdown, MessageInput, MessageList, ChatList },
   data() {
     return {
@@ -73,6 +81,7 @@ export default {
       messages: null,
       date: new Date(),
       searchInput: null,
+      width: 0,
     }
   },
   mounted() {
@@ -83,8 +92,12 @@ export default {
   },
   beforeUnmount() {
     clearInterval(this.interval)
+    window.removeEventListener("resize", this.onResize)
   },
   async created() {
+    window.addEventListener("resize", this.onResize)
+    this.onResize()
+
     this.userChats = (await this.$api.chat.getChats()).data
     this.chats = this.userChats
 
@@ -118,6 +131,9 @@ export default {
       // await this.$api.chat.sendMessage(this.selectedChatId, {
       //   messageText: messageText,
       // })
+    },
+    onResize() {
+      this.width = window.innerWidth
     },
     async logout() {
       try {
@@ -157,6 +173,9 @@ export default {
     username() {
       return this.$store.getters.userInfo.username || null
     },
+    split() {
+      return this.width <= 576
+    },
     filteredDate() {
       const options = {
         hour: "2-digit",
@@ -172,69 +191,67 @@ export default {
 <style scoped lang="scss">
 @import "../../assets/messenger.colors";
 
-.my-left {
-  width: 30%;
-  max-width: 350px;
+.header {
+  height: 50px;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  background: $header-bg;
+  border-right: 5px solid $border-list;
+  font-size: 14px;
+  font-weight: bold;
+
+  &-username {
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+  }
+  &-datetime {
+  }
+  &__datetime {
+  }
+
+  &-back {
+    cursor: pointer;
+  }
 }
-.my-right {
-  width: 90%;
-}
+
 .messenger {
-  color: white;
+  color: $white;
+  position: relative;
+  display: flex;
   max-width: 1600px;
-  width: calc(100% - 40px);
-  padding: 20px;
+  min-height: 100vh;
+  max-height: 100vh;
   font-size: 12px;
   margin: 0 auto;
 
-  &-header {
-    height: 40px;
-    display: flex;
+  .sidebar {
+    width: 576px;
+    min-width: 250px;
+    background: $side-bg;
 
-    .my-left {
-      display: flex;
-      background-color: $header-bg;
-      border-right: 2px solid $border-list;
-      font-size: 14px;
-
-      .username {
-        cursor: pointer;
-        font-weight: bold;
-        display: inline-block;
-        transition: 0.2s;
-
-        &:hover {
-          color: $blue-main;
-        }
-      }
-    }
-    .my-right {
-      display: flex;
-      background-color: $header-bg;
-      padding-left: 10px;
-      font-size: 14px;
-      font-weight: bold;
+    &-content {
+      width: 100%;
     }
   }
-  &-content {
-    display: flex;
-    height: calc(100vh - 80px);
 
-    .my-left {
-      background: $side-bg;
+  .chat {
+    background: $chat-bg;
+    width: 100%;
+
+    .header {
+      justify-content: flex-start;
     }
-    .my-right {
+
+    &-content {
+      height: calc(100% - 50px);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      background: $chat-bg;
     }
   }
 }
-.messenger-left {
-  width: 30%;
-}
-
 // X-Small devices (portrait phones, less than 576px)
 @media (max-width: 575.98px) {
 }
@@ -249,11 +266,6 @@ export default {
 
 // Large devices (desktops, less than 1200px)
 @media (max-width: 1199.98px) {
-  .messenger {
-    padding: 0;
-    width: 100%;
-    height: 100%;
-  }
 }
 
 // X-Large devices (large desktops, less than 1400px)

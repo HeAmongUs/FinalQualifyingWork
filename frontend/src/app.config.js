@@ -1,6 +1,6 @@
 export default {
   server: {
-    baseURL: "http://192.168.43.108:8000/",
+    baseURL: "http://127.0.0.1:8000/",
   },
   auth: {
     usernameMinLength: 6,

@@ -75,7 +75,6 @@ export default {
     align-self: flex-end;
     background: $message-current-user-bg !important;
   }
-
   &-header {
     display: flex;
     justify-content: space-between;
@@ -85,7 +84,6 @@ export default {
     align-self: center;
     font-size: 10px;
   }
-
   &-author {
     justify-self: flex-start;
     font-weight: bold;
@@ -119,7 +117,6 @@ export default {
         border-radius: 10px; /* закругления плашки */
       }
     }
-
     &-item {
       margin: 10px 20px;
       display: flex;
