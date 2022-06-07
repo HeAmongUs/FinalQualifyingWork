@@ -24,13 +24,12 @@ export default {
       },
       async (error) => {
         if (error.response.status === 401) {
+          console.log(error.response)
           if (
-            (error.response.data.message === "token is missing" ||
-              error.response.data.message === "token is expired") &&
+            error.response.data.message === "token is expired" &&
             !error.response.request.responseURL.includes("refresh")
           ) {
-            console.log("refresh")
-            const resp = await instance.post("api/v1/accounts/refresh/")
+            const resp = await instance.post("api/v1/accounts/refresh")
             if (resp.status === 200) {
               app.config.globalProperties.$message(
                 messages["accessTokenUpdate"]

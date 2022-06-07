@@ -91,6 +91,7 @@ export default {
     window.M.updateTextFields()
   },
   beforeUnmount() {
+    this.io = null
     clearInterval(this.interval)
     window.removeEventListener("resize", this.onResize)
   },
@@ -139,6 +140,7 @@ export default {
       try {
         await this.$api.auth.logout()
         this.$store.commit("clearUserInfo")
+        localStorage.removeItem("accessToken")
         await this.$router.push({ name: "Login" })
         this.$message(messages["logout"])
       } catch (e) {

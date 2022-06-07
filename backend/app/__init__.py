@@ -7,7 +7,7 @@ from app.accounts import accounts
 from app.accounts.my_jwt import MyJWT
 from app.accounts.models import User
 from app.chats.models import Chat, Message
-from app.common import db, mail, jwt, socketio
+from app.common import db, mail, socketio
 
 from app.chats import chats
 
@@ -33,7 +33,6 @@ def create_app():
     db.init_app(app)
     migrate = Migrate(app, db)
     mail.init_app(app)
-    jwt.init_app(app)
     socketio.init_app(app,
                       cors_allowed_origins=app.config.get("ALLOWED_HOST", '*'),
                       async_mode='threading')

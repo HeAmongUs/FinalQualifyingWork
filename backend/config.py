@@ -6,18 +6,18 @@ app_dir = os.path.abspath(os.path.dirname(__file__))
 
 
 class BaseConfig:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'flask-secret-1234567890'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or secret.SECRET_KEY
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    ALLOWED_HOSTS = '*'
+    ALLOWED_HOSTS = "*"
     CORS_HEADERS = 'Content-Type'
 
     # Config Flask-Mail
-    MAIL_USERNAME = secret.MAIL_USERNAME
-    MAIL_PASSWORD = secret.MAIL_PASSWORD
-    MAIL_SERVER = secret.MAIL_SERVER
-    MAIL_PORT = secret.MAIL_PORT
-    MAIL_USE_TLS = secret.MAIL_USE_TLS
+    MAIL_USERNAME = os.environ.get("MAIL_USERNAME") or secret.MAIL_USERNAME
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or secret.MAIL_PASSWORD
+    MAIL_SERVER = 'smtp.mail.ru'
+    MAIL_PORT = 2525
+    MAIL_USE_TLS = True
     MAIL_DEFAULT_SENDER = MAIL_USERNAME
 
     # config for field 'password' in accounts.models.User
@@ -55,6 +55,7 @@ class Config(BaseConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(app_dir, 'app.db')
     # f"postgresql://:{secret.DATABASE_USER}:{secret.DATABASE_PASSWORD}:5432/{secret.DATABASE_NAME} "
+
 
 # ИАФ 4 усиление
 # Class | Min-Len | ALPH | Trys | LockTimeMin | ChangePasswordDays |

@@ -88,6 +88,8 @@ textarea {
   }
 }
 .form {
+  position: sticky;
+  bottom: 0;
   display: flex;
   width: 100%;
   background: $message-input-panel-bg;
