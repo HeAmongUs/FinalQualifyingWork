@@ -3,4 +3,5 @@ export default {
   handler401: "Войдите в систему",
   loginSuccess: "Вход выполнен успешно",
   accessTokenUpdate: "Токен доступа обновлен",
+  serverError: "Ошибка на сервера",
 }

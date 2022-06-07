@@ -26,7 +26,6 @@ export default {
       },
       async (error) => {
         if (error.response.status === 401) {
-          console.log(error.response)
           if (
             error.response.data.message === "token is expired" &&
             !error.response.request.responseURL.includes("refresh")

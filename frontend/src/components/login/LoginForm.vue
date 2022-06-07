@@ -76,16 +76,20 @@ export default {
       if (this.isConfirmed) {
         user.OTPNumber = this.OTP
       }
-      const response = await this.$api.auth.login(user)
-      if (response.status === 200) {
-        if (this.isConfirmed) {
-          localStorage.setItem("accessToken", response.data.access_token)
-          localStorage.setItem("refreshToken", response.data.refresh_token)
-          await this.$router.push({ name: "Chats" })
-          this.$message(messages["loginSuccess"])
-        } else {
-          this.isConfirmed = true
+      try {
+        const response = await this.$api.auth.login(user)
+        if (response.status === 200) {
+          if (this.isConfirmed) {
+            localStorage.setItem("accessToken", response.data.access_token)
+            localStorage.setItem("refreshToken", response.data.refresh_token)
+            await this.$router.push({ name: "Chats" })
+            this.$message(messages["loginSuccess"])
+          } else {
+            this.isConfirmed = true
+          }
         }
+      } catch (e) {
+        this.$message(messages["serverError"])
       }
     },
   },
