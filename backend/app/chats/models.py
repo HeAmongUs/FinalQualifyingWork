@@ -4,7 +4,7 @@ from ..common import db
 from ..accounts.models import User
 
 users = db.Table('users',
-                 db.Column('user_username', db.Integer, db.ForeignKey('user.username')),
+                 db.Column('user_username', db.String(20), db.ForeignKey('user.username')),
                  db.Column('chat_id', db.Integer, db.ForeignKey('chat.id'))
                  )
 
@@ -35,7 +35,7 @@ class Message(db.Model):
     created_on = db.Column(db.DateTime(), default=datetime.utcnow)
 
     # Foreign key
-    user_username = db.Column(db.Integer, db.ForeignKey('user.username'))
+    user_username = db.Column(db.String(20), db.ForeignKey('user.username'))
     chat_id = db.Column(db.Integer, db.ForeignKey('chat.id'))
 
     def __repr__(self):

@@ -53,8 +53,14 @@ class BaseConfig:
 
 class Config(BaseConfig):
     DEBUG = True
+    # DATABASE_NAME = os.environ.get("DATABASE_NAME")
+    # DATABASE_USER = os.environ.get("DATABASE_USER")
+    # DATABASE_USER_PASSWORD = os.environ.get("DATABASE_USER_PASSWORD")
+    # DATABASE_ROOT = os.environ.get("DATABASE_ROOT")
+    # DATABASE_ROOT_PASSWORD = os.environ.get("DATABASE_ROOT_PASSWORD")
+    # SQLALCHEMY_DATABASE_URI = f"postgresql://{DATABASE_USER}:{DATABASE_USER_PASSWORD}@localhost:5432/{DATABASE_NAME}"
+
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(app_dir, 'app.db')
-    # f"postgresql://:{secret.DATABASE_USER}:{secret.DATABASE_PASSWORD}:5432/{secret.DATABASE_NAME} "
 
 
 # ИАФ 4 усиление
