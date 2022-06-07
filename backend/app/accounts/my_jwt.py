@@ -119,18 +119,18 @@ class MyJWT:
     @staticmethod
     def get_token_from_request(token_type='access'):
         # From cookies
-        access_token = request.cookies.get(app.config.get(f'JWT_{token_type.upper()}_TOKEN_COOKIE_NAME', None))
-        if access_token:
-            return access_token
+        token = request.cookies.get(app.config.get(f'JWT_{token_type.upper()}_TOKEN_COOKIE_NAME', None))
+        if token:
+            return token
 
         # From header
-        access_token = request.headers.get('Authorization', None)
-        if access_token:
-            return access_token
+        token = request.headers.get('Authorization', None)
+        if token:
+            return token
 
         # From json
         data = request.get_json()
         if data:
-            access_token = data.get(app.config.get(f'JWT_{token_type.upper()}_TOKEN_COOKIE_NAME', None))
-        if access_token:
-            return access_token
+            token = data.get(app.config.get(f'JWT_{token_type.upper()}_TOKEN_COOKIE_NAME', None))
+        if token:
+            return token

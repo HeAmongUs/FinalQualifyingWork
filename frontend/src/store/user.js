@@ -5,15 +5,9 @@ export default {
     userInfo: {
       isAuth: false,
     },
-    accessToken: null,
   },
   getters: {
     userInfo: (state) => state.userInfo,
-    accessToken: (state) => {
-      return state.accessToken
-        ? state.accessToken
-        : localStorage.accessToken || null
-    },
   },
   mutations: {
     setUserInfo(state, info) {
@@ -23,13 +17,6 @@ export default {
       state.userInfo = {
         isAuth: false,
       }
-    },
-    setAccessToken(state, token) {
-      state.accessToken = token
-      localStorage.accessToken = token
-    },
-    clearAccessToken(state) {
-      state.accessToken = null
     },
   },
   actions: {

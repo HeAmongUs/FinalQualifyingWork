@@ -2,6 +2,8 @@ import api from "@/api"
 import instance from "@/api/instance"
 import errorMessages from "@/plugins/errorMessages"
 import messages from "@/plugins/messages"
+import axios from "axios"
+import appConfig from "../app.config"
 
 export default {
   install: (app) => {
@@ -29,13 +31,22 @@ export default {
             error.response.data.message === "token is expired" &&
             !error.response.request.responseURL.includes("refresh")
           ) {
-            const resp = await instance.post("api/v1/accounts/refresh")
+            const resp = await axios.post(
+              `${appConfig.server.baseURL}api/v1/accounts/refresh`,
+              {},
+              {
+                headers: {
+                  Authorization: `${localStorage.getItem("refreshToken")}`,
+                },
+              }
+            )
             if (resp.status === 200) {
               app.config.globalProperties.$message(
                 messages["accessTokenUpdate"]
               )
-              if (resp.data.access_token) {
-                localStorage.accessToken = resp.data.access_token
+              localStorage.setItem("accessToken", resp.data.access_token)
+              error.config.headers = {
+                Authorization: `${localStorage.getItem("accessToken")}`,
               }
               return instance.request(error.config)
             } else {

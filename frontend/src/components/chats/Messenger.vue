@@ -102,7 +102,7 @@ export default {
     this.userChats = (await this.$api.chat.getChats()).data
     this.chats = this.userChats
 
-    const accessToken = await this.$store.getters.accessToken
+    const accessToken = localStorage.getItem("accessToken")
     this.io = await io(`${appConfig.server.baseURL}`, {
       extraHeaders: {
         Authorization: accessToken,
@@ -141,6 +141,7 @@ export default {
         await this.$api.auth.logout()
         this.$store.commit("clearUserInfo")
         localStorage.removeItem("accessToken")
+        localStorage.removeItem("refreshToken")
         await this.$router.push({ name: "Login" })
         this.$message(messages["logout"])
       } catch (e) {
