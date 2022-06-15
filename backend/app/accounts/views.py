@@ -10,6 +10,8 @@ from app.accounts.my_jwt import MyJWT
 from app.accounts.custom_error import *
 from app.accounts.validator import UserValidator
 
+from ..common import db
+
 
 @accounts.route('/login', methods=['post'])
 def login():
@@ -17,13 +19,13 @@ def login():
     username = data.get('username', None)
     password = data.get('password', None)
 
-    if not (username and password and UserValidator.is_valid_username_and_password(username, password)):
-        return make_response({"Error": "Invalid username or password"}, 404)
+    if not UserValidator.is_valid_username_and_password(username, password):
+        return make_response({"Error": "Invalid username or password"}, 403)
 
     user = User.authenticate(username=username, password=password)
 
     if not user:
-        return make_response({"Error": "Invalid username or password"}, 404)
+        return make_response({"Error": "Invalid username or password"}, 403)
 
     otp_number = data.get('OTPNumber', 0)
 
@@ -31,27 +33,27 @@ def login():
         TwoFactorAuthentication.authenticate_with_email(user)
         return make_response({"Message": "OTP number was send on your email"}, 200)
 
-    if UserValidator.is_valid_otp_number(otp_number):
-        try:
-            user_otp_number = user.get_otp_number()
-        except OTPTryError as e:
-            return make_response({"Error": f"{e}"}, 404)
-        if user_otp_number == otp_number or app.config.get("DEBUG"):
-            user.otp_try = 3
-            response = make_response({})
+    if not UserValidator.is_valid_otp_number(otp_number):
+        return make_response({"Message": "OTP number number is invalid"}, 403)
 
-            access_token = MyJWT.encode_token(user.username, token_type="access")
-            refresh_token = MyJWT.encode_token(user.username, token_type="refresh")
+    try:
+        user_otp_number = user.get_otp_number()
+        print(user.otp_try)
+    except OTPTryError as e:
+        return make_response({"Error": f"OTP try error. New code was send on your email"}, 403)
 
-            response.data = json.dumps({'Message': 'Login successfully',
-                                        'access_token': access_token,
-                                        'refresh_token': refresh_token})
-            return response
-        else:
-            return make_response({"Error": "Invalid OTP number"}, 404)
-    else:
-        TwoFactorAuthentication.authenticate_with_email(user)
-        return make_response({"Message": "OTP number was send on your email"}, 200)
+    if not (user_otp_number == otp_number or app.config.get("DEBUG")):
+        return make_response({"Error": "OTP number number is invalid"}, 403)
+
+    user.otp_try = 3
+    db.session.commit()
+
+    access_token = MyJWT.encode_token(user.username, token_type="access")
+    refresh_token = MyJWT.encode_token(user.username, token_type="refresh")
+
+    return make_response({'Message': 'Login successfully',
+                          'access_token': access_token,
+                          'refresh_token': refresh_token}, 200)
 
 
 @accounts.route("/logout", methods=["DELETE"])

@@ -6,18 +6,18 @@
       type="text"
       :class="{ invalid: v$.$invalid && v$.$dirty }"
     />
-    <label for="username">Username</label>
+    <label for="username">Имя пользователя</label>
     <small
       v-if="v$.lazyUsername.$dirty && v$.lazyUsername.required.$invalid"
       class="helper-text invalid"
     >
-      Введите Username
+      Введите имя
     </small>
     <small
       v-else-if="v$.lazyUsername.$dirty && v$.lazyUsername.$invalid"
       class="helper-text invalid"
     >
-      Введите корректный Username</small
+      Введите корректное имя</small
     >
   </div>
 </template>

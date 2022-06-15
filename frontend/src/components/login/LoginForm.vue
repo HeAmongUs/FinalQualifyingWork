@@ -20,7 +20,7 @@
         class="btn waves-effect waves-light cyan lighten-1"
         type="submit"
       >
-        Send
+        войти
         <i class="material-icons right">send</i>
       </button>
     </form>
@@ -32,6 +32,7 @@ import PasswordInput from "./PasswordInput"
 import OTPInput from "./OTPInput"
 import UsernameInput from "./UsernameInput"
 import messages from "@/plugins/messages"
+import errorMessages from "../../plugins/errorMessages";
 
 export default {
   name: "LoginForm",
@@ -52,7 +53,7 @@ export default {
   },
   computed: {
     formTitle() {
-      return this.isConfirmed ? "Enter code" : "Sign-in"
+      return this.isConfirmed ? "Введите код" : "Вход"
     },
     isDisabled() {
       if (!this.isConfirmed) {
@@ -89,7 +90,7 @@ export default {
           }
         }
       } catch (e) {
-        this.$message(messages["serverError"])
+        this.$errorMessage(errorMessages["serverError"])
       }
     },
   },

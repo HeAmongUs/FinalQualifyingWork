@@ -1,8 +1,7 @@
 from datetime import datetime
 
 from ..common import db
-from .utils import HashPassword
-from .custom_error import OTPTryError
+from .utils import HashPassword, otp_try
 from .validator import UserValidator
 
 
@@ -67,11 +66,10 @@ class User(db.Model):
             self.otp_number = otp_number
 
     def get_otp_number(self):
-        if self.otp_try < 3:
-            self.otp_try += 1
-            return self.otp_number
-        else:
-            raise OTPTryError
+        return otp_try(self)
+
+    def clear_otp_try(self):
+        self.otp_try = 0
 
     def get_email(self):
         return self.email

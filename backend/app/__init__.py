@@ -65,7 +65,7 @@ def create_app():
             # msg3 = Message(id=3, text="user41 say in First chat", user_username=user2.username, chat_id=chat1.id)
             # msg4 = Message(id=4, text="user41 say in Second chat", user_username=user2.username, chat_id=chat2.id)
             # msg5 = Message(id=5, text=msg5_text, user_username=user2.username, chat_id=chat2.id)
-
+            #
             # db.session.add(chat1)
             # db.session.add(chat2)
             # db.session.add(chat3)
@@ -78,8 +78,8 @@ def create_app():
             #
             # db.session.commit()
 
-            print(User.query.all())
-            print(Chat.query.all())
+            # print(User.query.all())
+            # print(Chat.query.all())
         except Exception as e:
             print(e)
 

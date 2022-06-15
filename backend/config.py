@@ -22,6 +22,7 @@ class BaseConfig:
 
     # config for field 'password' in accounts.models.User
     NAME_MIN_LENGTH = 6
+    OTP_TRY_COUNT = 3
     USERNAME_MIN_LENGTH = 6
     PASSWORD_MIN_LENGTH = 6
     PASSWORD_INCLUDES_SPECIAL_SYMBOLS = True
@@ -37,30 +38,23 @@ class BaseConfig:
 
     JWT_ACCESS_TOKEN_COOKIE_NAME = "access_token"
     JWT_ACCESS_TOKEN_COOKIE_PATH = "/"
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=5)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=30)
 
     JWT_REFRESH_TOKEN_COOKIE_NAME = "refresh_token"
     JWT_REFRESH_TOKEN_COOKIE_PATH = "/api/v1/accounts/refresh"
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
-    JWT_COOKIE_DOMAIN = None
-    JWT_COOKIE_SAMESITE = 'None'
-    JWT_COOKIE_SECURE = False
-    JWT_COOKIE_HTTP_ONLY = True
-    JWT_SESSION_COOKIE = False
-    JWT_COOKIE_CSRF_PROTECT = False
-
 
 class Config(BaseConfig):
     DEBUG = True
-    DATABASE_NAME = os.environ.get("DATABASE_NAME")
-    DATABASE_USER = os.environ.get("DATABASE_USER")
-    DATABASE_USER_PASSWORD = os.environ.get("DATABASE_USER_PASSWORD")
-    DATABASE_ROOT = os.environ.get("DATABASE_ROOT")
-    DATABASE_ROOT_PASSWORD = os.environ.get("DATABASE_ROOT_PASSWORD")
-    SQLALCHEMY_DATABASE_URI = f"postgresql://{DATABASE_USER}:{DATABASE_USER_PASSWORD}@localhost:5432/{DATABASE_NAME}"
+    # DATABASE_NAME = os.environ.get("DATABASE_NAME")
+    # DATABASE_USER = os.environ.get("DATABASE_USER")
+    # DATABASE_USER_PASSWORD = os.environ.get("DATABASE_USER_PASSWORD")
+    # DATABASE_ROOT = os.environ.get("DATABASE_ROOT")
+    # DATABASE_ROOT_PASSWORD = os.environ.get("DATABASE_ROOT_PASSWORD")
+    # SQLALCHEMY_DATABASE_URI = f"postgresql://{DATABASE_USER}:{DATABASE_USER_PASSWORD}@localhost:5432/{DATABASE_NAME}"
 
-    # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(app_dir, 'app.db')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(app_dir, 'app.db')
 
 
 # ИАФ 4 усиление

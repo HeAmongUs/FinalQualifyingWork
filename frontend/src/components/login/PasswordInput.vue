@@ -6,18 +6,18 @@
       type="password"
       :class="{ invalid: v$.$invalid && v$.$dirty }"
     />
-    <label for="password">Password</label>
+    <label for="password">Пароль</label>
     <small
       v-if="v$.lazyPassword.$dirty && v$.lazyPassword.required.$invalid"
       class="helper-text invalid"
     >
-      Введите Password
+      Введите пароль
     </small>
     <small
       v-else-if="v$.lazyPassword.$dirty && v$.lazyPassword.$invalid"
       class="helper-text invalid"
     >
-      Введите корректный Password</small
+      Введите корректный пароль</small
     >
   </div>
 </template>

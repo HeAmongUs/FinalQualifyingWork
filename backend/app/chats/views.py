@@ -16,23 +16,22 @@ def get_chats():
 
 @chats.route("/list/<title>", methods=['GET'])
 @MyJWT.jwt_required()
-def get_searched_chats(title):
+def get_searched_chats(title: str):
     searched_chats = Chat.query.filter(Chat.title.contains(title)).all()
     return jsonify([chat.serialize for chat in searched_chats])
 
 
-@chats.route("/<chat_id>/messages", methods=['GET'])
+@chats.route("/<chat_id>", methods=['GET'])
 @MyJWT.jwt_required()
-def get_messages(chat_id):
+def get_messages(chat_id: int):
     chat = Chat.query.filter_by(id=chat_id).first()
     if MyJWT.get_current_user() in chat.users_in_chat:
         return jsonify([msg.serialize for msg in chat.messages])
     return jsonify({})
 
 
-# СОКЕТЫ
 # не работает все что ниже
-@chats.route("/<chat_id>/enter", methods=['POST'])
+@chats.route("/<chat_id>", methods=['POST'])
 @MyJWT.jwt_required()
 def enter_in_chat(chat_id: int):
     if chat_id:
@@ -42,8 +41,7 @@ def enter_in_chat(chat_id: int):
         db.session.comit()
 
 
-# SOCKET
-@chats.route("/<chat_id>/leave", methods=['DELETE'])
+@chats.route("/<chat_id>", methods=['DELETE'])
 @MyJWT.jwt_required()
 def leave_from_chat(chat_id):
     if chat_id:
@@ -55,7 +53,7 @@ def leave_from_chat(chat_id):
 
 @socketio.on("send message")
 @MyJWT.jwt_required()
-def send_message(payload):
+def send_message(payload: dict):
     chat_id = payload.get("chatId")
     current_user = MyJWT.get_current_user()
     chat = Chat.query.filter_by(id=chat_id).first()

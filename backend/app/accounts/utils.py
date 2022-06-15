@@ -4,6 +4,7 @@ from hashlib import sha256
 from flask_mail import Message
 from flask import current_app as app
 
+from .custom_error import OTPTryError
 from app.common import db, mail
 
 
@@ -32,8 +33,8 @@ class TwoFactorAuthentication:
         msg = Message("Verification code", recipients=[f'{email}'])
         msg.html = \
             f"<h1>Verification code</h1>" \
-            f"<p>An attempt was made to log into your account</p>" \
-            f"<p>Your code: {otp_number}</p>"
+            f"<h5>An attempt was made to log into your account</h5>" \
+            f"<p>Your code: <strong>{otp_number}</strong> </p>"
 
         if not app.config.get("DEBUG"):
             mail.send(msg)
@@ -42,8 +43,19 @@ class TwoFactorAuthentication:
     def authenticate_with_email(user):
         try:
             user.set_otp_number(TwoFactorAuthentication.get_OTP_number())
+            TwoFactorAuthentication.send_OTP_number(user.get_email(), user.otp_number)
+            user.clear_otp_try()
             db.session.add(user)
             db.session.commit()
         except Exception as e:
             raise Exception(f'{e}, \n error authenticate_with_email')
-        TwoFactorAuthentication.send_OTP_number(user.get_email(), user.get_otp_number)
+
+
+def otp_try(user):
+    if user.otp_try < app.config.get("OTP_TRY_COUNT", 3):
+        user.otp_try += 1
+        db.session.add(user)
+        db.session.commit()
+        return user.otp_number
+    else:
+        raise OTPTryError

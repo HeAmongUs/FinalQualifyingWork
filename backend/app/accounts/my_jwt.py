@@ -93,13 +93,10 @@ class MyJWT:
                         MyJWT.decode_token(token)
                         return func(*args, **kwargs)
                     else:
-                        print("missing token")
                         return make_response({'message': 'token is missing'}, 401)
                 except jwt.ExpiredSignatureError:
-                    print("expired token")
                     return make_response({'message': 'token is expired'}, 401)
                 except (jwt.InvalidTokenError, jwt.DecodeError) as e:
-                    print(f'token is invalid', e)
                     return make_response({'message': 'token is invalid'}, 401)
 
             return inner
