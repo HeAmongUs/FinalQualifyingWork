@@ -54,36 +54,8 @@ class MyJWT:
                 raise jwt.InvalidTokenError
 
     @staticmethod
-    def set_cookie(response: Response, token: str, token_type: str = "access") -> None:
-        token_type_upper = token_type.upper()
-        response.set_cookie(
-            key=app.config.get(f"JWT_{token_type_upper}_TOKEN_COOKIE_NAME"),
-            value=token,
-            max_age=app.config.get(f"JWT_{token_type_upper}_TOKEN_EXPIRES"),
-            secure=app.config.get("JWT_COOKIE_SECURE"),
-            httponly=app.config.get("JWT_COOKIE_HTTP_ONLY"),
-            domain=app.config.get("JWT_COOKIE_DOMAIN", None),
-            path=app.config.get(f"JWT_{token_type_upper}_TOKEN_COOKIE_PATH"),
-            samesite=app.config.get("JWT_COOKIE_SAMESITE"),
-        )
-
-    @staticmethod
-    def unset_cookie(response: Response, token_type: str = "access") -> None:
-        token_type_upper = token_type.upper()
-        response.set_cookie(
-            key=app.config.get(f"JWT_{token_type_upper}_TOKEN_COOKIE_NAME"),
-            value="",
-            expires=1,
-            secure=app.config.get("JWT_COOKIE_SECURE"),
-            httponly=app.config.get("JWT_COOKIE_HTTP_ONLY"),
-            domain=app.config.get("JWT_COOKIE_DOMAIN", None),
-            path=app.config.get(f"JWT_{token_type_upper}_TOKEN_COOKIE_PATH"),
-            samesite=app.config.get("JWT_COOKIE_SAMESITE"),
-        )
-
-    @staticmethod
     def jwt_required(token_type="access"):
-
+        """authenticate request"""
         def wrapper(func):
             @wraps(func)
             def inner(*args, **kwargs):
@@ -131,3 +103,33 @@ class MyJWT:
             token = data.get(app.config.get(f'JWT_{token_type.upper()}_TOKEN_COOKIE_NAME', None))
         if token:
             return token
+
+
+
+    @staticmethod
+    def set_cookie(response: Response, token: str, token_type: str = "access") -> None:
+        token_type_upper = token_type.upper()
+        response.set_cookie(
+            key=app.config.get(f"JWT_{token_type_upper}_TOKEN_COOKIE_NAME"),
+            value=token,
+            max_age=app.config.get(f"JWT_{token_type_upper}_TOKEN_EXPIRES"),
+            secure=app.config.get("JWT_COOKIE_SECURE"),
+            httponly=app.config.get("JWT_COOKIE_HTTP_ONLY"),
+            domain=app.config.get("JWT_COOKIE_DOMAIN", None),
+            path=app.config.get(f"JWT_{token_type_upper}_TOKEN_COOKIE_PATH"),
+            samesite=app.config.get("JWT_COOKIE_SAMESITE"),
+        )
+
+    @staticmethod
+    def unset_cookie(response: Response, token_type: str = "access") -> None:
+        token_type_upper = token_type.upper()
+        response.set_cookie(
+            key=app.config.get(f"JWT_{token_type_upper}_TOKEN_COOKIE_NAME"),
+            value="",
+            expires=1,
+            secure=app.config.get("JWT_COOKIE_SECURE"),
+            httponly=app.config.get("JWT_COOKIE_HTTP_ONLY"),
+            domain=app.config.get("JWT_COOKIE_DOMAIN", None),
+            path=app.config.get(f"JWT_{token_type_upper}_TOKEN_COOKIE_PATH"),
+            samesite=app.config.get("JWT_COOKIE_SAMESITE"),
+        )

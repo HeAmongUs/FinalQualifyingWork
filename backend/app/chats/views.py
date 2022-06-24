@@ -30,7 +30,6 @@ def get_messages(chat_id: int):
     return jsonify({})
 
 
-# не работает все что ниже
 @chats.route("/<chat_id>", methods=['POST'])
 @MyJWT.jwt_required()
 def enter_in_chat(chat_id: int):
@@ -62,5 +61,9 @@ def send_message(payload: dict):
         new_msg = Message(text=text, user_username=current_user.username, chat_id=chat_id)
         db.session.add(new_msg)
         db.session.commit()
-        new_msg = Message.query.filter_by(chat_id=chat_id, user_username=current_user.username, text=text)[-1]
+        new_msg = Message.query.filter_by(
+            chat_id=chat_id,
+            user_username=current_user.username,
+            text=text
+        ).order_by(Message.id.desc()).first()
         emit("display new message", new_msg.serialize, broadcast=True)

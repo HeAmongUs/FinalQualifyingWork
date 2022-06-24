@@ -38,7 +38,6 @@ def login():
 
     try:
         user_otp_number = user.get_otp_number()
-        print(user.otp_try)
     except OTPTryError as e:
         return make_response({"Error": f"OTP try error. New code was send on your email"}, 403)
 

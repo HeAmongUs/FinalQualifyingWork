@@ -40,8 +40,8 @@ def create_app():
     with app.app_context():
         try:
             db.create_all()
-            user1 = User(username="root41", name="Vladislav", email="heamongus@mail.ru", password="Root_41")
-            user2 = User(username="user41", name="FirstUser", email="user1@mail.ru", password="Root_41")
+            user1 = User(username="root41", email="heamongus@mail.ru", password="Root_41")
+            user2 = User(username="user41", email="user1@mail.ru", password="Root_41")
 
             # db.session.add(user1)
             # db.session.add(user2)

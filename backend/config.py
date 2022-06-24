@@ -20,10 +20,12 @@ class BaseConfig:
     MAIL_USE_TLS = True
     MAIL_DEFAULT_SENDER = MAIL_USERNAME
 
-    # config for field 'password' in accounts.models.User
+    # settings of fields accounts.models.User
     NAME_MIN_LENGTH = 6
     OTP_TRY_COUNT = 3
     USERNAME_MIN_LENGTH = 6
+
+    # settings of field 'password' in accounts.models.User
     PASSWORD_MIN_LENGTH = 6
     PASSWORD_INCLUDES_SPECIAL_SYMBOLS = True
     PASSWORD_INCLUDES_LOWERCASE = True
@@ -35,13 +37,7 @@ class BaseConfig:
     JWT_ISSUER_NAME = 'backend_server'
     JWT_AUDIENCE_LIST = ['frontend_client', 'mobile_client']
     JWT_IDENTITY_CLAIM = "username"
-
-    JWT_ACCESS_TOKEN_COOKIE_NAME = "access_token"
-    JWT_ACCESS_TOKEN_COOKIE_PATH = "/"
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=30)
-
-    JWT_REFRESH_TOKEN_COOKIE_NAME = "refresh_token"
-    JWT_REFRESH_TOKEN_COOKIE_PATH = "/api/v1/accounts/refresh"
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
 
@@ -55,11 +51,3 @@ class Config(BaseConfig):
     # SQLALCHEMY_DATABASE_URI = f"postgresql://{DATABASE_USER}:{DATABASE_USER_PASSWORD}@localhost:5432/{DATABASE_NAME}"
 
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(app_dir, 'app.db')
-
-
-# ИАФ 4 усиление
-# Class | Min-Len | ALPH | Trys | LockTimeMin | ChangePasswordDays |
-# 4     |    6    | >30  | 3-10 | 3-15        | <=180              |
-# 3     |    6    | >60  | 3-10 | 5-30        | <=120              |
-# 2     |    6    | >70  | 3-8  | 10-30       | <=90               |
-# 1     |    8    | >70  | 3-4  | 15-60       | <=60               |

@@ -7,7 +7,6 @@ from .validator import UserValidator
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     messages = db.relationship('Message', backref='user', lazy='dynamic')
@@ -18,8 +17,7 @@ class User(db.Model):
     created_on = db.Column(db.DateTime(), default=datetime.utcnow)
     updated_on = db.Column(db.DateTime(), default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    def __init__(self, name, username, email, password):
-        self.set_name(name)
+    def __init__(self, username, email, password):
         self.set_username(username)
         self.set_email(email)
         self.set_password(password)
@@ -42,11 +40,7 @@ class User(db.Model):
         return "<{}:{}>".format(self.id, self.username)
 
     def to_dict(self):
-        return dict(id=self.id, name=self.name, username=self.username, email=self.email)
-
-    def set_name(self, name):
-        if UserValidator.is_valid_name(name):
-            self.name = name
+        return dict(id=self.id, username=self.username, email=self.email)
 
     def set_username(self, username):
         if UserValidator.is_valid_username(username):
