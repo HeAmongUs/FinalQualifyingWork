@@ -1,6 +1,15 @@
 # final qualifying work
 Flask + Vue3
 
+## Установка
+```bash
+git clone https://github.com/HeAmongUs/FinalQualifyingWork
+cd backend
+python -r requirements.txt
+cd .. && cd frontend
+npm i
+```
+
 ## Подсистема аутентификации
 ### Аутентификация на основе JWT
 PyJWT + реализован класс my_jwt со @staticmethod:
